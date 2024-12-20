@@ -33,6 +33,7 @@ const AdminProductFormPage = () => {
   function handleProductForm(dataBody: IProduct) {
     try {
       if (id) {
+        console.log(dataBody);
       } else {
       }
     } catch (error) {
