@@ -1,7 +1,7 @@
 import { ErrorMessage } from "@hookform/error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { ProductSchema } from "../../schemas/ProductSchema";
 import instance from "../../services";
@@ -33,9 +33,6 @@ const AdminProductFormPage = () => {
   function handleProductForm(dataBody: IProduct) {
     try {
       if (id) {
-        (async () => {
-          const res = await instance.patch(`/products/${id}`, dataBody);
-        })();
       } else {
       }
     } catch (error) {

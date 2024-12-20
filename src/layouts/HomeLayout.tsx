@@ -1,8 +1,4 @@
-import React from "react";
-
-type Props = {};
-
-const HomeLayout = (props: Props) => {
+const HomeLayout = () => {
   return <div>HomeLayout</div>;
 };
 
