@@ -2,7 +2,10 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IProduct } from "../../interfaces/IProduct";
 import { AppDispatch, RootState } from "../../store/store";
-import { fetchProducts } from "../../features/products/productAction";
+import {
+  removeProduct,
+  fetchProducts,
+} from "../../features/products/productAction";
 import { Link } from "react-router-dom";
 const AdminProductPage = () => {
   const { products, loading, error } = useSelector(
@@ -12,6 +15,11 @@ const AdminProductPage = () => {
   useEffect(() => {
     dispatch(fetchProducts());
   }, []);
+  function handleDelete(id: number | string | undefined) {
+    const newId = id as number | string;
+    confirm("Do you want deleting this product?") &&
+      dispatch(removeProduct(newId));
+  }
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error</div>;
   return (
@@ -33,23 +41,29 @@ const AdminProductPage = () => {
             </tr>
           </thead>
           <tbody className="divide-y">
-            {products.map((item: IProduct) => (
-              <tr key={item.id}>
-                <td className="p-2 text-center">{item.id}</td>
-                <td className="p-2 text-center">{item.title}</td>
-                <td className="p-2 text-center">{item.price}</td>
-                <td className="p-2 text-center">{item.description}</td>
-                <td className="p-2 text-center flex gap-2 items-center">
-                  <Link
-                    className="p-2 bg-yellow-500 rounded-md"
-                    to={`/admin/product-update/${item.id}`}
-                  >
-                    Update
-                  </Link>
-                  <button className="p-2 bg-red-500 rounded-md">Delete</button>
-                </td>
-              </tr>
-            ))}
+            {products &&
+              products.map((item: IProduct) => (
+                <tr key={item.id}>
+                  <td className="p-2 text-center">{item.id}</td>
+                  <td className="p-2 text-center">{item.title}</td>
+                  <td className="p-2 text-center">{item.price}</td>
+                  <td className="p-2 text-center">{item.description}</td>
+                  <td className="p-2 text-center flex gap-2 items-center">
+                    <Link
+                      className="p-2 bg-yellow-500 rounded-md"
+                      to={`/admin/product-update/${item.id}`}
+                    >
+                      Update
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(item.id)}
+                      className="p-2 bg-red-500 rounded-md"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

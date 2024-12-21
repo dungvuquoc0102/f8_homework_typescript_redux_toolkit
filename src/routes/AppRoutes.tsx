@@ -6,10 +6,15 @@ import NotFoundLayout from "../layouts/NotFoundLayout";
 import RegisterLayout from "../layouts/RegisterLayout";
 import AdminProductFormPage from "../pages/admin/AdminProductFormPage";
 import AdminProductPage from "../pages/admin/AdminProductPage";
+import HomePage from "../pages/HomePage";
 
 const AppRoutes = () => {
   const routes = [
-    { path: "/", element: <HomeLayout /> },
+    {
+      path: "/",
+      element: <HomeLayout />,
+      children: [{ index: true, element: <HomePage /> }],
+    },
 
     {
       path: "/admin",

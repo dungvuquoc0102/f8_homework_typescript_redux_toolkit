@@ -2,10 +2,16 @@ import { ErrorMessage } from "@hookform/error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ProductSchema } from "../../schemas/ProductSchema";
-import instance from "../../services";
 import { IProduct } from "../../interfaces/IProduct";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
+import {
+  createProduct,
+  editProduct,
+  fetchProductById,
+} from "../../features/products/productAction";
 
 const AdminProductFormPage = () => {
   const { id } = useParams();
@@ -22,19 +28,25 @@ const AdminProductFormPage = () => {
       description: "",
     },
   });
+  const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     id &&
       (async () => {
-        const res = await instance.get(`/products/${id}`);
-        reset(res.data);
+        const data = await dispatch(fetchProductById(id)).unwrap();
+        reset(data);
       })();
   }, []);
+  const nav = useNavigate();
 
   function handleProductForm(dataBody: IProduct) {
     try {
       if (id) {
-        console.log(dataBody);
+        dispatch(editProduct({ id, dataBody }));
+        nav("/admin");
       } else {
+        dispatch(createProduct(dataBody));
+        confirm("Go to product list?") && nav("/admin");
+        reset();
       }
     } catch (error) {
       console.log(error);
@@ -56,9 +68,10 @@ const AdminProductFormPage = () => {
         <div className="flex flex-col gap-1 mb-3">
           <label htmlFor="price">Price</label>
           <input
-            type="text"
+            type="number"
+            step="any"
             className="border rounded-md p-1"
-            {...register("price")}
+            {...register("price", { valueAsNumber: true })}
           />
           <ErrorMessage errors={errors} name="price" />
         </div>
